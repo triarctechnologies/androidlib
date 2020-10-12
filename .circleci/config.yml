@@ -1,0 +1,78 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+
+jobs:
+  build:
+    working_directory: ~/repo
+
+    docker:
+      - image: circleci/android:api-26
+
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            - v1-dependencies-{{ checksum "app/build.gradle" }}
+            - v1-dependencies-
+
+      - run:
+          name: Download Dependencies
+          command: ./gradlew dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+
+      - run:
+          name: Kotlin lint check
+          command: ./gradlew ktlint
+
+      - run:
+          name: Build Eventbus module
+          command: ./gradlew eventbus:build
+
+      - run:
+          name: Publish Eventbus module
+          command: ./gradlew eventbus:publish
+
+      - run:
+          name: Build Logger module
+          command: ./gradlew logger:build
+
+      - run:
+          name: Publish Logger module
+          command: ./gradlew logger:publish
+
+      - run:
+          name: Build Network module
+          command: ./gradlew network:build
+
+      - run:
+          name: Publish Network module
+          command: ./gradlew network:publish
+
+      - run:
+          name: Build Support module
+          command: ./gradlew support:build
+
+      - run:
+          name: Publish Support module
+          command: ./gradlew support:publish
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          context: GLOBAL
