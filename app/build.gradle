@@ -1,0 +1,69 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+apply from: '../code_quality.gradle'
+
+android {
+    flavorDimensions "default"
+
+    compileSdkVersion build_versions.target_sdk
+
+    defaultConfig {
+        applicationId "com.triarc.android.lib.application"
+
+
+        minSdkVersion    build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+
+        versionCode Integer.parseInt("${VERSION_NUMBER_MAJOR}") * 10000 +
+                Integer.parseInt("${VERSION_NUMBER_MINOR}") * 100 +
+                Integer.parseInt("${VERSION_NUMBER_PATCH}") * 1
+
+        versionName "${VERSION_NUMBER_MAJOR}.${VERSION_NUMBER_MINOR}.${VERSION_NUMBER_PATCH}"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            debuggable false
+            minifyEnabled false
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+/*Define application level dependencies*/
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    /*Project module dependencies*/
+
+    /*Kotlin dependency*/
+    implementation dependency.kotlin.runtime
+
+    /*Kotlin code quality dependency*/
+    ktlint dependency.kotlin.lint
+
+    /*Android SDK dependencies*/
+    implementation dependency.support.v4
+    implementation dependency.support.design
+    implementation dependency.support.appcompat
+    implementation dependency.support.constraint_layout
+}

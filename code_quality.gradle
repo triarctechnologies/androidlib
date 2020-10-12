@@ -1,0 +1,22 @@
+/*Update source code path if there is an update in application package name*/
+def packageName = "src/main/java/com/tapendium/lib/android/**/*.kt"
+
+configurations {
+    ktlint
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin Code Style"
+    classpath   = configurations.ktlint
+    main        = "com.pinterest.ktlint.Main"
+    args packageName
+}
+
+build.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin Code Style Deviations"
+    classpath   = configurations.ktlint
+    main        = "com.pinterest.ktlint.Main"
+    args "-F", packageName
+}

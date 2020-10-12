@@ -1,0 +1,7 @@
+include ':app'
+include ':logger'
+include ':network'
+include ':support'
+include ':eventbus'
+
+rootProject.name = "androidlib"

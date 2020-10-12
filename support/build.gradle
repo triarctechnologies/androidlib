@@ -1,0 +1,64 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+apply from: file('publish.gradle')
+
+android {
+    compileSdkVersion build_versions.target_sdk
+
+    defaultConfig {
+        minSdkVersion    build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+
+        versionCode Integer.parseInt("${VERSION_NUMBER_MAJOR}") * 10000 +
+                Integer.parseInt("${VERSION_NUMBER_MINOR}") * 100 +
+                Integer.parseInt("${VERSION_NUMBER_PATCH}") * 1
+
+        versionName "${VERSION_NUMBER_MAJOR}.${VERSION_NUMBER_MINOR}.${VERSION_NUMBER_PATCH}"
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            debuggable false
+            minifyEnabled false
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    /*Project module dependencies*/
+    implementation project(dependency.module.logger)
+
+    /*Android SDK dependencies*/
+    implementation dependency.support.v4
+    implementation dependency.support.design
+    implementation dependency.support.appcompat
+    implementation dependency.support.localbroadcast
+
+    /*RxJava dependencies*/
+    implementation dependency.rxjava.runtime
+
+    /*Kotlin dependency*/
+    implementation dependency.kotlin.runtime
+
+    /*Unit test dependencies*/
+    testImplementation dependency.test.junit
+}
