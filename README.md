@@ -171,4 +171,4 @@ TriArc's `androidlib` is published by CircleCI directly. For the latest version 
 
 ## Author
 
-* Devanshu Verma
+* TriArc Technologies
